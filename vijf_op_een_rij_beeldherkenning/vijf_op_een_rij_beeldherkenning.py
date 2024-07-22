@@ -7,7 +7,7 @@ from time import sleep
 
 #Vreemd genoeg zijn er duplicaten van stukken, die worden in het volgende programma verwerkt en verwijderd
 
-def crop_to_square(frame): #todo: knip zodat enkel het bord zichtbaar is
+def crop_to_square(frame):
     height, width = frame.shape[:2]
     smallest_side = min(height, width)
     start_x = (width - smallest_side) // 2 
@@ -18,7 +18,7 @@ def crop_to_square(frame): #todo: knip zodat enkel het bord zichtbaar is
 def detect_pieces_via_webcam():
    
    # Open the webcam
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(1)#extern webcam
     # cap = cv2.VideoCapture(0) for built-in webcam
     if not cap.isOpened():
         print("Could not open the webcam. Please check if it is connected and try again.")
