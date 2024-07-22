@@ -1,60 +1,11 @@
 {
-    "timestamp": "2024-07-22T09:18:57.514536",
+    "timestamp": "2024-07-22T16:51:00.562691",
     "pieces": [
         {
             "color": "Red",
             "coordinates": [
-                14,
-                14
-            ]
-        },
-        {
-            "color": "Red",
-            "coordinates": [
-                5,
-                13
-            ]
-        },
-        {
-            "color": "Blue",
-            "coordinates": [
-                2,
-                13
-            ]
-        },
-        {
-            "color": "Red",
-            "coordinates": [
-                12,
-                12
-            ]
-        },
-        {
-            "color": "Blue",
-            "coordinates": [
-                3,
-                9
-            ]
-        },
-        {
-            "color": "Blue",
-            "coordinates": [
-                10,
+                8,
                 8
-            ]
-        },
-        {
-            "color": "Blue",
-            "coordinates": [
-                3,
-                7
-            ]
-        },
-        {
-            "color": "Blue",
-            "coordinates": [
-                13,
-                4
             ]
         }
     ]

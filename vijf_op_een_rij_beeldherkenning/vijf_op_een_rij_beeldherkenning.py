@@ -16,7 +16,7 @@ def crop_to_square(frame):
     return square_frame
 
 def detect_pieces_via_webcam():
-   
+    detected_pieces_old = {}
    # Open the webcam
     cap = cv2.VideoCapture(1)#extern webcam
     # cap = cv2.VideoCapture(0) for built-in webcam
@@ -25,7 +25,7 @@ def detect_pieces_via_webcam():
         return #beeindigen
 
     while True:
-        sleep(0)
+        sleep(1)
         ret, frame = cap.read()
         if not ret:
             print("Could not read a frame from the webcam. It is most likely a software error.")
@@ -86,10 +86,11 @@ def detect_pieces_via_webcam():
             json.dump(data, json_file, indent=4)
 
         # Print detected pieces to the console
-        print("Detected pieces and coordinates:")
-        for (x, y), color in detected_pieces.items():
-            print(f"Color: {color}, Coordinates: ({x}, {y})")
-
+        if detected_pieces_old != detected_pieces:
+            print("Detected pieces and coordinates:")
+            for (x, y), color in detected_pieces.items():
+                print(f"Color: {color}, Coordinates: ({x}, {y})")
+        detected_pieces_old=detected_pieces
         sleep(0)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
