@@ -1,11 +1,46 @@
 {
-    "timestamp": "2024-07-16T14:22:02.544969",
+    "timestamp": "2024-07-22T09:18:21.761502",
     "pieces": [
         {
             "color": "Red",
             "coordinates": [
-                8,
+                14,
                 14
+            ]
+        },
+        {
+            "color": "Blue",
+            "coordinates": [
+                2,
+                13
+            ]
+        },
+        {
+            "color": "Red",
+            "coordinates": [
+                10,
+                12
+            ]
+        },
+        {
+            "color": "Blue",
+            "coordinates": [
+                10,
+                8
+            ]
+        },
+        {
+            "color": "Blue",
+            "coordinates": [
+                4,
+                7
+            ]
+        },
+        {
+            "color": "Blue",
+            "coordinates": [
+                13,
+                5
             ]
         }
     ]

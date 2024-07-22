@@ -81,7 +81,7 @@ def detect_pieces_via_webcam():
             "timestamp": datetime.now().isoformat(),
             "pieces": detected_pieces_list
         }
-
+        
         with open('detected_pieces.json', 'w') as json_file:
             json.dump(data, json_file, indent=4)
 
