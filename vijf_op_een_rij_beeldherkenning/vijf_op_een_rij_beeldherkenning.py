@@ -18,6 +18,7 @@ def crop_to_square(frame):
 def detect_pieces_via_webcam():
     detected_pieces_old = {}
    # Open the webcam
+    print("connecting to webcam...")
     cap = cv2.VideoCapture(1)#extern webcam
     # cap = cv2.VideoCapture(0) for built-in webcam
     if not cap.isOpened():
@@ -25,7 +26,7 @@ def detect_pieces_via_webcam():
         return #beeindigen
 
     while True:
-        sleep(1)
+        sleep(0)
         ret, frame = cap.read()
         if not ret:
             print("Could not read a frame from the webcam. It is most likely a software error.")
