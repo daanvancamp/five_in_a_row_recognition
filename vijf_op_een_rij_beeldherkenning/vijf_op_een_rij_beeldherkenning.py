@@ -54,7 +54,7 @@ def detect_pieces_via_webcam():
         detected_pieces = {}
         for idx, contour in enumerate(contours, start=1):#start=1 for not starting at 0
             area = cv2.contourArea(contour)
-            if area > 600:
+            if 10000>area > 600:
                 x, y, w, h = cv2.boundingRect(contour)
                 center_x = x + w // 2
                 center_y = y + h // 2
