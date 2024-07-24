@@ -19,7 +19,7 @@ def detect_pieces_via_webcam():
     detected_pieces_old = {}
    # Open the webcam
     print("connecting to webcam...")
-    cap = cv2.VideoCapture(1)#extern webcam
+    cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)#extern webcam
     # cap = cv2.VideoCapture(0) for built-in webcam
     if not cap.isOpened():
         print("Could not open the webcam. Please check if it is connected and try again.")
