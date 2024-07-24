@@ -1,17 +1,10 @@
 {
-    "timestamp": "2024-07-24T10:07:54.125670",
+    "timestamp": "2024-07-23T23:06:11.584342",
     "pieces": [
         {
             "color": "Red",
             "coordinates": [
-                14,
-                15
-            ]
-        },
-        {
-            "color": "Red",
-            "coordinates": [
-                3,
+                11,
                 15
             ]
         }
