@@ -1,5 +1,3 @@
-cv2
-time
+opencv-python
 datetime
 numpy
-json
