@@ -22,7 +22,7 @@ def get_color_bounds(hsv_color):
     return lower_bound, upper_bound
 
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
     if not cap.isOpened():
         print("Error: Could not open webcam.")
         return
