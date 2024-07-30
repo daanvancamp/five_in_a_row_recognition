@@ -29,7 +29,7 @@ def detect_black_squares(frame):
     squares = []
     for contour in contours:
         area = cv2.contourArea(contour)
-        if 50 < area < 20000:
+        if 200 < area < 20000:
             epsilon = 0.1 * cv2.arcLength(contour, True)
             approx = cv2.approxPolyDP(contour, epsilon, True)
             
@@ -66,10 +66,10 @@ def detect_pieces(frame, board_coords):
     cell_width = board_width / 14
     cell_height = board_height / 14
 
-    lower_red = np.array([0, 0, 100])
-    upper_red = np.array([100, 100, 255])
-    lower_blue = np.array([100, 0, 0])
-    upper_blue = np.array([255, 100, 100])
+    lower_red = np.array([0 ,178, 155]) #origineel: (0, 0, 100)
+    upper_red = np.array([7, 255, 255])#origineel: (100, 100, 255)
+    lower_blue = np.array([110 ,111, 183])#origineel: (100, 0, 0)
+    upper_blue = np.array([ 118, 217 ,255])#origineel: (255, 100, 100)
 
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask_red = cv2.inRange(hsv_frame, lower_red, upper_red)
