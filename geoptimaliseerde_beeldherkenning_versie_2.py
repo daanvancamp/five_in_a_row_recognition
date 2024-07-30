@@ -15,8 +15,8 @@ def crop_to_square(frame):
 def detect_black_squares(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
-    lower_black = np.array([103, 50, 50])
-    upper_black = np.array([123, 255, 255])
+    lower_black = np.array([115  , 0 , 73])
+    upper_black = np.array([125 , 75, 173])
     
     mask = cv2.inRange(hsv, lower_black, upper_black)
     
