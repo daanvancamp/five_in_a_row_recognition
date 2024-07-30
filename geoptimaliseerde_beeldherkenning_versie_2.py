@@ -83,7 +83,7 @@ def detect_pieces(frame, board_coords):
     detected_pieces = {}
     for contour in contours:
         area = cv2.contourArea(contour)
-        if 10000 > area > 100:
+        if 10000 > area > 200:
             x, y, w, h = cv2.boundingRect(contour)
             center_x = x + w // 2
             center_y = y + h // 2
