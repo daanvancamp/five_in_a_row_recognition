@@ -15,8 +15,8 @@ def crop_to_square(frame):
 def detect_black_squares(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
-    lower_black = np.array([115  , 0 , 73])
-    upper_black = np.array([125 , 75, 173])
+    lower_black = np.array([103, 50, 50])
+    upper_black = np.array([123, 255, 255])
     
     mask = cv2.inRange(hsv, lower_black, upper_black)
     
@@ -29,7 +29,7 @@ def detect_black_squares(frame):
     squares = []
     for contour in contours:
         area = cv2.contourArea(contour)
-        if 200 < area < 20000:
+        if 210 < area < 20000:
             epsilon = 0.1 * cv2.arcLength(contour, True)
             approx = cv2.approxPolyDP(contour, epsilon, True)
             
@@ -66,10 +66,21 @@ def detect_pieces(frame, board_coords):
     cell_width = board_width / 14
     cell_height = board_height / 14
 
-    lower_red = np.array([0 ,178, 155]) #origineel: (0, 0, 100)
-    upper_red = np.array([7, 255, 255])#origineel: (100, 100, 255)
-    lower_blue = np.array([110 ,111, 183])#origineel: (100, 0, 0)
-    upper_blue = np.array([ 118, 217 ,255])#origineel: (255, 100, 100)
+    # lower_red = np.array([0 ,178, 155]) #origineel: (0, 0, 100)
+    # lower_red= np.array([0, 150, 150])
+    # upper_red = np.array([7, 255, 255])#origineel: (100, 100, 255)
+    # upper_red = np.array([10, 255, 255])
+
+    # lower_blue = np.array([110 ,111, 183])#origineel: (100, 0, 0)
+    # lower_blue = np.array([100, 150, 150])
+    # upper_blue = np.array([ 118, 217 ,255])#origineel: (255, 100, 100)
+    # upper_blue = np.array([ 130, 255, 255])
+
+    lower_red= np.array([0,0,100])
+    upper_red = np.array([100,100,255])
+
+    lower_blue = np.array([100,0,0])
+    upper_blue = np.array([255,100,100])
 
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask_red = cv2.inRange(hsv_frame, lower_red, upper_red)
@@ -83,7 +94,7 @@ def detect_pieces(frame, board_coords):
     detected_pieces = {}
     for contour in contours:
         area = cv2.contourArea(contour)
-        if 10000 > area > 200:
+        if area > 1:
             x, y, w, h = cv2.boundingRect(contour)
             center_x = x + w // 2
             center_y = y + h // 2
@@ -99,6 +110,33 @@ def detect_pieces(frame, board_coords):
                 detected_pieces[(board_x, board_y)] = color
 
     return detected_pieces
+
+def draw_detected_pieces(frame, detected_pieces, board_coords):
+    if board_coords is None:
+        return frame
+    
+    board_x, board_y, board_width, board_height = board_coords
+    cell_width = board_width / 14
+    cell_height = board_height / 14
+    
+    for (x, y), color in detected_pieces.items():
+        piece_x = int(board_x + x * cell_width)
+        piece_y = int(board_y + y * cell_height)
+        
+        if color == "Red":
+            rect_color = (0, 0, 255)  # Rood in BGR
+            text_color = (255, 255, 255)  # Wit voor betere leesbaarheid
+        else:  # Blue
+            rect_color = (255, 0, 0)  # Blauw in BGR
+            text_color = (255, 255, 255)  # Wit voor betere leesbaarheid
+        
+        # Teken rechthoek
+        cv2.rectangle(frame, (piece_x, piece_y), (piece_x + int(cell_width), piece_y + int(cell_height)), rect_color, 2)
+        
+        # Voeg tekst toe
+        cv2.putText(frame, color, (piece_x, piece_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
+    
+    return frame
 
 def detect_pieces_via_webcam():
     detected_pieces_old = {}
@@ -147,9 +185,14 @@ def detect_pieces_via_webcam():
 
         frame = crop_to_square(frame)
         cv2.imshow('Camera Frame', frame)
+
         cv2.waitKey(5)
 
         detected_pieces = detect_pieces(frame, board_coords)
+        display_frame = draw_detected_pieces(display_frame, detected_pieces, board_coords)
+
+        cv2.imshow('pieces', display_frame)
+
 
         detected_pieces_list = [{"color": color, "coordinates": [x, y]} for (x, y), color in detected_pieces.items()]
         data = {
