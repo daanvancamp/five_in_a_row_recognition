@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/vijf_op_een_rij_beeldherkenning.pyproj
+/vijf_op_een_rij_beeldherkenning.sln
