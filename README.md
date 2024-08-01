@@ -6,5 +6,6 @@ Only the programa 'vijf op een rij beeldherkenning' is stable. **I am working to
 
 
 Note: the project is still under development. Some features aren't stable as of right now. The project will hopefully be finished in april of 2025, so you can expect the stable and complete version ultimately then, but it could be done earlier.
+The recognition is unusable as of right now. That will be fixed in a few weeks.
 
 developped by: daanvancamp

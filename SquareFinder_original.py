@@ -78,12 +78,12 @@ class SquareFinder:
 
 # Voorbeeld van gebruik (commentaar verwijderen om uit te voeren):
 if __name__ == "__main__":
-    image = cv2.imread('./testopstellingen/bord3.jpg')
+    image = cv2.imread('./testopstellingen/bord6.jpg')
     squares = SquareFinder.find_squares(image)
     for square in squares:
         cv2.polylines(image, [square], True, (0, 255, 0), 2)
     print("Vierkanten gedetecteerd:", len(squares))
-    image=cv2.resize(image,(800,800))
+    image=cv2.resize(image,(1000,1000))
     cv2.imshow('Squares', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
