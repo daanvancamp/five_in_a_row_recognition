@@ -3,9 +3,16 @@ from operator import index
 import cv2
 from math import sqrt
 
+<<<<<<< HEAD
 BOARD_SIZE=7 #7x7
 PLACES=BOARD_SIZE*BOARD_SIZE
 def draw_point_and_show(image,point):
+=======
+BOARD_SIZE=7
+def draw_point_and_show(image,point):
+    point = (368, 365)  # Hier gebruiken we gehele getallen voor de pixelco�rdinaten
+
+>>>>>>> 31279087d694610068b8a9cade0fda75edfbe680
     # Kleur van het punt in BGR (blauw, groen, rood)
     color = (0, 0, 255)  # Rood in BGR
 
@@ -19,12 +26,20 @@ def draw_point_and_show(image,point):
 
     cv2.imshow("Corners", image)  
 
+<<<<<<< HEAD
 def determine_average_distances(list_corners)->tuple[int,int]:
 
+=======
+def determine_coordinates_columns(list_corners)->tuple[list,list]:
+
+    list_average_x_values=[]
+    list_average_y_values=[]
+>>>>>>> 31279087d694610068b8a9cade0fda75edfbe680
     for i in list_corners:
         list_x_values_column=[]
         list_y_values_row=[]
         for corner in i:
+<<<<<<< HEAD
             list_x_values_column.append(corner[0])#=x value
             list_y_values_row.append(corner[1])#=y value
     average_horizontal_distance=(max(list_x_values_column)-min(list_x_values_column))/(BOARD_SIZE-1)
@@ -62,6 +77,16 @@ def extrapolate_other_corners(list_corners,average_horizontal_distance,average_v
 
 
 def get_other_cells(corners,image):
+=======
+            list_x_values_column.append(corner[0])
+            list_y_values_row.append(corner[1])
+        list_average_x_values.append(sum(list_x_values_column)/len(list_x_values_column))
+        list_average_y_values.append(sum(list_y_values_row)/len(list_y_values_row))
+
+    return list_average_x_values,list_average_y_values
+
+def print_corners(corners,image):
+>>>>>>> 31279087d694610068b8a9cade0fda75edfbe680
     global BOARD_SIZE
     #order: from top left to bottom right, row by row
     corners = corners[corners[:, 0, 0].argsort()] #sort per column
@@ -76,15 +101,22 @@ def get_other_cells(corners,image):
     print(list_corners)
     list_corners:list[tuple[tuple[int,int]]]
 
+<<<<<<< HEAD
     average_horizontal_distance,average_vertical_distance=determine_average_distances(list_corners)
 
     list_corners=extrapolate_other_corners(list_corners,average_horizontal_distance,average_vertical_distance)
+=======
+    determine_coordinates_columns(list_corners)
+>>>>>>> 31279087d694610068b8a9cade0fda75edfbe680
 
 
     for index,i in enumerate(corners):
         print("hoek"+str(index+1)+":",i)#type=numpy.ndarray
+<<<<<<< HEAD
 
     return list_corners
+=======
+>>>>>>> 31279087d694610068b8a9cade0fda75edfbe680
 
 number_of_corners=(7,7)
 # read input image
@@ -102,7 +134,11 @@ ret, corners = cv2.findChessboardCorners(gray, number_of_corners,None)#optional 
 # if chessboard corners are detected
 if ret == True:
    print("Chessboard detected")
+<<<<<<< HEAD
    corners=get_other_cells(corners,img)
+=======
+   print_corners(corners,img)
+>>>>>>> 31279087d694610068b8a9cade0fda75edfbe680
    # Draw and display the corners
    img = cv2.drawChessboardCorners(img, number_of_corners, corners,ret)
    cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
