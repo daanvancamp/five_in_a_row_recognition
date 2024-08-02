@@ -4,6 +4,7 @@ import cv2
 from math import sqrt
 import numpy as np
 BOARD_SIZE=8
+corners_to_be_found=7
 
 def draw_point_and_show(image,point):
     point = (368, 365)  # Hier gebruiken we gehele getallen voor de pixelco�rdinaten
@@ -78,15 +79,14 @@ def extrapolate_other_corners(list_corners_tuples,corners,average_horizontal_dis
 
 
 def get_other_corners(corners,image):
-    global BOARD_SIZE
+    global BOARD_SIZE,corners_to_be_found
     #order: from top left to bottom right, row by row
     corners = corners[corners[:, 0, 0].argsort()] #sort per column
     
     tuple_kolom=()
     list_tuples_corners=[]
-
-    for i in range(BOARD_SIZE):
-        for i in range(BOARD_SIZE): #order: from top left to bottom right, row by row)
+    for i in range(corners_to_be_found):
+        for i in range(corners_to_be_found): #order: from top left to bottom right, row by row)
             tuple_kolom+=((corners[i][0][0],corners[i][0][1]),)
         list_tuples_corners.append(tuple_kolom)
     #print(list_tuples_corners)
@@ -103,7 +103,7 @@ def get_other_corners(corners,image):
 
     return list_tuples_corners
 
-number_of_corners=(7,7)
+number_of_corners=(corners_to_be_found,corners_to_be_found)
 # read input image
 img = cv2.imread(r'./testopstellingen/bord8.jpg')
 
@@ -119,8 +119,6 @@ ret, corners = cv2.findChessboardCorners(gray, number_of_corners,None)#optional 
 # if chessboard corners are detected
 if ret == True:
     print("Chessboard detected")
-
- 
     corners=get_other_corners(corners,img)
     print("corners:",corners)
     corners=np.unique(corners,axis=0)
