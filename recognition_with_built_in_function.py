@@ -35,7 +35,7 @@ def determine_average_distances(list_corners_tuples,corners)->tuple[int,int]:
 
     list_tuples_corners=[]
     for i in range(corners_to_be_found):
-        for i in range(corners_to_be_found): #order: from top left to bottom right, row by row)
+        for x in range(corners_to_be_found): #order: from top left to bottom right, row by row)
             tuple_rij+=((corners[i][0][0],corners[i][0][1]),)
         list_tuples_corners.append(tuple_rij)
 
@@ -103,7 +103,7 @@ def get_other_corners(corners,image):
     tuple_kolom=()
     list_tuples_corners=[]
     for i in range(corners_to_be_found):
-        for i in range(corners_to_be_found): #order: from top left to bottom right, row by row)
+        for f in range(corners_to_be_found): #order: from top left to bottom right, row by row)
             tuple_kolom+=((corners[i][0][0],corners[i][0][1]),)
         list_tuples_corners.append(tuple_kolom)
     #print(list_tuples_corners)
