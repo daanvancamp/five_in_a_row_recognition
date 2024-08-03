@@ -4,7 +4,7 @@ import cv2
 from math import sqrt
 import numpy as np
 BOARD_SIZE=8
-corners_to_be_found=7
+corners_to_be_found=BOARD_SIZE-1
 
 def draw_point_and_show(image,point):
     color = (0, 0, 255)  # Rood in BGR
@@ -17,18 +17,40 @@ def draw_point_and_show(image,point):
 
     cv2.imshow("Corners", image)  
 
-def determine_average_distances(list_corners)->tuple[int,int]:
-
-    for i in list_corners:
+def determine_average_distances(list_corners_tuples,corners)->tuple[int,int]:
+    for column in list_corners_tuples:
         list_x_values_column=[]
-        list_y_values_row=[]
-        for corner in i:
+        list_y_values_column=[]
+        for corner in column:
             list_x_values_column.append(corner[0])#=x value
-            list_y_values_row.append(corner[1])#=y value
-    average_horizontal_distance=(max(list_x_values_column)-min(list_x_values_column))/(BOARD_SIZE-1)
-    average_vertical_distance=(max(list_y_values_row)-min(list_y_values_row))/(BOARD_SIZE-1)
+            list_y_values_column.append(corner[1])#=y value
+    average_horizontal_distance_column=(max(list_x_values_column)-min(list_x_values_column))/(corners_to_be_found)
+    average_vertical_distance_column=(max(list_y_values_column)-min(list_y_values_column))/(corners_to_be_found)
 
-    return average_horizontal_distance,average_vertical_distance
+    
+    corners= corners[corners[0, :, 0].argsort()]
+    print(corners)
+
+    tuple_rij=()
+
+    list_tuples_corners=[]
+    for i in range(corners_to_be_found):
+        for i in range(corners_to_be_found): #order: from top left to bottom right, row by row)
+            tuple_rij+=((corners[i][0][0],corners[i][0][1]),)
+        list_tuples_corners.append(tuple_rij)
+
+    for row in list_tuples_corners:
+        list_x_values_row=[]
+        list_y_values_row=[]
+        for corner in row:
+            list_x_values_row.append(corner[0])#=x value
+            list_y_values_row.append(corner[1])#=y value
+    
+    average_horizontal_distance_row=(max(list_x_values_row)-min(list_x_values_row))/(corners_to_be_found)
+    average_vertical_distance_row=(max(list_y_values_row)-min(list_y_values_row))/(corners_to_be_found)
+
+
+    return (average_horizontal_distance_column,average_vertical_distance_column),(average_horizontal_distance_row,average_vertical_distance_row)
 
 def append_element(corners,element):
     element=[[element]] #same layout
@@ -87,10 +109,9 @@ def get_other_corners(corners,image):
     #print(list_tuples_corners)
     list_tuples_corners:list[tuple[tuple[int,int]]]
 
+    (average_horizontal_distance_column,average_vertical_distance_column),(average_horizontal_distance_row,average_vertical_distance_row)=determine_average_distances(list_tuples_corners,corners)
 
-    average_horizontal_distance,average_vertical_distance=determine_average_distances(list_tuples_corners)
-
-    list_tuples_corners=extrapolate_other_corners(list_tuples_corners,corners,average_horizontal_distance,average_vertical_distance)
+    list_tuples_corners=extrapolate_other_corners(list_tuples_corners,corners,average_horizontal_distance_column,average_vertical_distance_column,average_horizontal_distance_row,average_vertical_distance_row)
 
 
     for index,i in enumerate(corners):
@@ -114,9 +135,9 @@ ret, corners = cv2.findChessboardCorners(gray, number_of_corners,None)#optional 
 # if chessboard corners are detected
 if ret == True:
     print("Chessboard detected")
-    corners=get_other_corners(corners,img)
+    #corners=get_other_corners(corners,img)
     print("corners:",corners)
-    corners=np.unique(corners,axis=0)
+    #corners=np.unique(corners,axis=0)
     # Draw and display the corners
     img = cv2.drawChessboardCorners(img, number_of_corners, corners,ret)
     cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
