@@ -148,3 +148,7 @@ if __name__ == "__main__":
     else:
         print("No chessboard detected")
     cv2.destroyAllWindows()
+
+
+   #todo: detect middle point of each cell(square)
+   #todo:use "pythagoras to calculate the closest distance between two points"
