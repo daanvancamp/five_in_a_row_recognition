@@ -3,6 +3,7 @@ from operator import index
 import cv2
 from math import sqrt
 import numpy as np
+
 BOARD_SIZE=8
 corners_to_be_found=BOARD_SIZE-1
 
@@ -28,8 +29,8 @@ def determine_average_distances(list_corners_tuples,corners)->tuple[int,int]:
     average_vertical_distance_column=(max(list_y_values_column)-min(list_y_values_column))/(corners_to_be_found)
 
     
-    corners= corners[corners[0, :, 0].argsort()]
-    print(corners)
+    corners= corners[corners[0, :, 0].argsort()]#sort per row
+    print("hoeken",corners)
 
     tuple_rij=()
 
@@ -119,30 +120,31 @@ def get_other_corners(corners,image):
 
     return list_tuples_corners
 
-number_of_corners=(corners_to_be_found,corners_to_be_found)
-# read input image
-img = cv2.imread(r'./testopstellingen/bord8.jpg')
+if __name__ == "__main__":
+    number_of_corners=(corners_to_be_found,corners_to_be_found)
+    # read input image
+    img = cv2.imread(r'./testopstellingen/bord8.jpg')
 
-# convert the input image to a grayscale
-try:
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-except:
-    raise Exception("check the image path")
+    # convert the input image to a grayscale
+    try:
+        gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    except:
+        raise Exception("check the image path")
 
-# Find the chess board corners
-ret, corners = cv2.findChessboardCorners(gray, number_of_corners,None)#optional parameters: flags = cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_FAST_CHECK + cv2.CALIB_CB_NORMALIZE_IMAGE
+    # Find the chess board corners
+    ret, corners = cv2.findChessboardCorners(gray, number_of_corners,None)#optional parameters: flags = cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_FAST_CHECK + cv2.CALIB_CB_NORMALIZE_IMAGE
 
-# if chessboard corners are detected
-if ret == True:
-    print("Chessboard detected")
-    #corners=get_other_corners(corners,img)
-    print("corners:",corners)
-    #corners=np.unique(corners,axis=0)
-    # Draw and display the corners
-    img = cv2.drawChessboardCorners(img, number_of_corners, corners,ret)
-    cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
-    cv2.imshow('Chessboard',img)
-    cv2.waitKey(0)
-else:
-    print("No chessboard detected")
-cv2.destroyAllWindows()
+    # if chessboard corners are detected
+    if ret == True:
+        print("Chessboard detected")
+        #corners=get_other_corners(corners,img)
+        print("corners:",corners)
+        #corners=np.unique(corners,axis=0)
+        # Draw and display the corners
+        img = cv2.drawChessboardCorners(img, number_of_corners, corners,ret)
+        cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
+        cv2.imshow('Chessboard',img)
+        cv2.waitKey(0)
+    else:
+        print("No chessboard detected")
+    cv2.destroyAllWindows()
