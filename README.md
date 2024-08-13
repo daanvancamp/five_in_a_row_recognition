@@ -1,4 +1,4 @@
-# vijf_op_een_rij_beeldherkenning
+# five_in_a_row_recognition
 **The recognition is unusable as of right now. That will be fixed in a few weeks.**
 
 Is part of this project: https://github.com/daanvancamp/gomoku-thesis-proj
