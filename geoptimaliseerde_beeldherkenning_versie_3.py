@@ -4,7 +4,6 @@ import json
 from datetime import datetime
 from time import sleep
 
-# Minimale oppervlakte voor schijfjes (gemakkelijk aanpasbaar)
 MIN_PIECE_AREA = 100
 
 def crop_to_square(frame):
