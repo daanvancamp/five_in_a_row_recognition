@@ -4,7 +4,7 @@ import cv2
 from math import sqrt
 import numpy as np
 
-BOARD_SIZE=8
+BOARD_SIZE=15
 corners_to_be_found=BOARD_SIZE-1
 
 def draw_point_and_show(image,point):
@@ -18,34 +18,24 @@ def draw_point_and_show(image,point):
 
     cv2.imshow("Corners", image)  
 
-def determine_average_distances(list_corners_tuples,corners)->tuple[int,int]:
-    for column in list_corners_tuples:
-        list_x_values_column=[]
-        list_y_values_column=[]
-        for corner in column:
-            list_x_values_column.append(corner[0])#=x value
-            list_y_values_column.append(corner[1])#=y value
+def determine_average_distances(corners)->tuple[int,int]:
+    aantal=0
+    list_x_values_column=[]
+    list_y_values_column=[]
+    for corner in corners:
+        aantal+=1
+        list_x_values_column.append(corner[0])#=x value
+        list_y_values_column.append(corner[1])#=y value
     average_horizontal_distance_column=(max(list_x_values_column)-min(list_x_values_column))/(corners_to_be_found)
     average_vertical_distance_column=(max(list_y_values_column)-min(list_y_values_column))/(corners_to_be_found)
-
     
-    corners= corners[corners[0, :, 0].argsort()]#sort per row
-    print("hoeken",corners)
+    corners = corners[corners[0, :, 0].argsort()]#sort per row
 
-    tuple_rij=()
-
-    list_tuples_corners=[]
-    for i in range(corners_to_be_found):
-        for x in range(corners_to_be_found): #order: from top left to bottom right, row by row)
-            tuple_rij+=((corners[i][0][0],corners[i][0][1]),)
-        list_tuples_corners.append(tuple_rij)
-
-    for row in list_tuples_corners:
+    for corner in corners:
         list_x_values_row=[]
         list_y_values_row=[]
-        for corner in row:
-            list_x_values_row.append(corner[0])#=x value
-            list_y_values_row.append(corner[1])#=y value
+        list_x_values_row.append(corner[0])#=x value
+        list_y_values_row.append(corner[1])#=y value
     
     average_horizontal_distance_row=(max(list_x_values_row)-min(list_x_values_row))/(corners_to_be_found)
     average_vertical_distance_row=(max(list_y_values_row)-min(list_y_values_row))/(corners_to_be_found)
@@ -62,11 +52,8 @@ def append_element(corners,element):
     return corners
 
 
-def extrapolate_other_corners(list_corners_tuples,corners,average_horizontal_distance,average_vertical_distance)->list:
-    list_corners_tuples:list[list[tuple[int,int]]]
-    #print(list_corners_tuples)
-    print(corners)
-    for index_column,column in enumerate(list_corners_tuples):
+def extrapolate_other_corners(,corners,average_horizontal_distance,average_vertical_distance)->list:
+    for index_column,column in enumerate():
             for index_row,corner in enumerate(column) :
                 #add the cells to the right and left
                 if index_column==0:
@@ -100,30 +87,20 @@ def get_other_corners(corners,image):
     global BOARD_SIZE,corners_to_be_found
     #order: from top left to bottom right, row by row
     corners = corners[corners[:, 0, 0].argsort()] #sort per column
-    
-    tuple_kolom=()
-    list_tuples_corners=[]
-    for i in range(corners_to_be_found):
-        for f in range(corners_to_be_found): #order: from top left to bottom right, row by row)
-            tuple_kolom+=((corners[i][0][0],corners[i][0][1]),)
-        list_tuples_corners.append(tuple_kolom)
-    #print(list_tuples_corners)
-    list_tuples_corners:list[tuple[tuple[int,int]]]
 
-    (average_horizontal_distance_column,average_vertical_distance_column),(average_horizontal_distance_row,average_vertical_distance_row)=determine_average_distances(list_tuples_corners,corners)
+    (average_horizontal_distance_column,average_vertical_distance_column),(average_horizontal_distance_row,average_vertical_distance_row)=determine_average_distances(corners)
 
-    list_tuples_corners=extrapolate_other_corners(list_tuples_corners,corners,average_horizontal_distance_column,average_vertical_distance_column,average_horizontal_distance_row,average_vertical_distance_row)
-
+    #list_tuples_corners=extrapolate_other_corners(list_tuples_corners,corners,average_horizontal_distance_column,average_vertical_distance_column,average_horizontal_distance_row,average_vertical_distance_row)
 
     for index,i in enumerate(corners):
         print("hoek"+str(index+1)+":",i)#type=numpy.ndarray
 
-    return list_tuples_corners
+    return corners
 
 if __name__ == "__main__":
     number_of_corners=(corners_to_be_found,corners_to_be_found)
     # read input image
-    img = cv2.imread(r'./testopstellingen/bord8.jpg')
+    img = cv2.imread(r'./testopstellingen/bord10.jpg')
 
     # convert the input image to a grayscale
     try:
@@ -137,10 +114,7 @@ if __name__ == "__main__":
     # if chessboard corners are detected
     if ret == True:
         print("Chessboard detected")
-        #corners=get_other_corners(corners,img)
-        print("corners:",corners)
-        #corners=np.unique(corners,axis=0)
-        # Draw and display the corners
+        corners=get_other_corners(corners,img)
         img = cv2.drawChessboardCorners(img, number_of_corners, corners,ret)
         cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
         cv2.imshow('Chessboard',img)
