@@ -22,10 +22,12 @@ def determine_average_distances(corners)->tuple[int,int]:
     aantal=0
     list_x_values_column=[]
     list_y_values_column=[]
-    for corner in corners:
-        aantal+=1
+    for i in range(corners_to_be_found):
+
         list_x_values_column.append(corner[0])#=x value
         list_y_values_column.append(corner[1])#=y value
+        for i in range(corners_to_be_found):
+            pass
     average_horizontal_distance_column=(max(list_x_values_column)-min(list_x_values_column))/(corners_to_be_found)
     average_vertical_distance_column=(max(list_y_values_column)-min(list_y_values_column))/(corners_to_be_found)
     
