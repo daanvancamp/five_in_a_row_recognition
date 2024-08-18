@@ -196,7 +196,7 @@ def match_shapes_to_centers(shapes, cell_centers, img,color):
 def main():
     number_of_corners = (corners_to_be_found, corners_to_be_found)
     
-    img = cv2.imread(r'./testopstellingen/bord14.jpg')
+    img = cv2.imread(r'./testopstellingen/bord10.jpg')
     print("geladen")
 
     # Convert to grayscale
@@ -205,7 +205,8 @@ def main():
     except Exception as e:
         raise Exception(f"Check the image path: {e}")
 
-    ret, corners = cv2.findChessboardCorners(gray, number_of_corners, None)
+
+    ret, corners = cv2.findChessboardCorners(gray, number_of_corners,cv2.CALIB_CB_ADAPTIVE_THRESH)
     
     if ret == True:
         print("Chessboard detected")
