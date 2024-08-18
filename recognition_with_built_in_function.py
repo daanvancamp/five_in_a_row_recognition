@@ -114,11 +114,21 @@ def detect_pieces(cell_centers):
     blue_ellipses = detect_and_draw_ellipses(img, mask_blue, color=(255, 0, 0), shape="blue ellipses")
     red_ellipses = detect_and_draw_ellipses(img, mask_red, color=(0, 0, 255), shape="red ellipses")
 
-    # Combineer cirkels en ellipsen voor beide kleuren
+    # Bereken en toon het dichtstbijzijnde celcentrum voor elk gedetecteerd object
+    list_blue_shapes=match_shapes_to_centers(blue_ellipses, cell_centers, img,"blue")
+    list_red_shapes=match_shapes_to_centers(red_ellipses, cell_centers, img,"red")
+
     all_shapes = blue_ellipses + red_ellipses
 
-    # Bereken en toon het dichtstbijzijnde celcentrum voor elk gedetecteerd object
-    match_shapes_to_centers(all_shapes, cell_centers, img)
+    list_shapes = list_blue_shapes + list_red_shapes
+
+    data = {
+            "timestamp": datetime.datetime.now().isoformat(),
+            "pieces": list_shapes
+        }
+        
+    with open('detected_pieces.json', 'w') as json_file:
+        json.dump(data, json_file, indent=4, default=int) # convert numpy array to int
 
     cv2.namedWindow("Detected Pieces", cv2.WINDOW_NORMAL)
     cv2.imshow("Detected Pieces", img)
@@ -146,11 +156,12 @@ def get_coordinates(index):
     y = index[0]%BOARD_SIZE
     return (x,y)
 
-def match_shapes_to_centers(shapes, cell_centers, img):
+def match_shapes_to_centers(shapes, cell_centers, img,color):
     """
     Voor elk gedetecteerd object (cirkel of ellips), bepaal welk celcentrum het dichtstbijzijnde is
     en teken de lijn tussen hen op de afbeelding.
     """
+    list_shapes = []
     for shape in shapes:
         closest_center = None
         min_distance = float("inf")
@@ -168,20 +179,24 @@ def match_shapes_to_centers(shapes, cell_centers, img):
             index = (result[0][0], result[1][0])
             coordinates= get_coordinates(index)
 
+            list_shapes.append((color,coordinates))
+
+
             shape_point = tuple(map(int, shape))  # Converteer shape naar een tuple van integers
             closest_center_point = tuple(map(int, closest_center))  # Converteer closest_center naar een tuple van integers
             
-            print(f"Shape {index} is closest to center {closest_center_point}.")
 
             # Teken een lijn van het object naar het dichtstbijzijnde celcentrum
             cv2.line(img, shape_point, closest_center_point, (0, 255, 0), 2)
             cv2.circle(img, shape_point, 5, (0, 255, 255), -1)  # Teken een geel punt op het gedetecteerde object
             cv2.circle(img, closest_center_point, 5, (255, 255, 0), -1)  # Teken een blauw punt op het celcentrum
 
+    return list_shapes
+
 def main():
     number_of_corners = (corners_to_be_found, corners_to_be_found)
     
-    img = cv2.imread(r'./testopstellingen/bord10.jpg')
+    img = cv2.imread(r'./testopstellingen/bord14.jpg')
     print("geladen")
 
     # Convert to grayscale
