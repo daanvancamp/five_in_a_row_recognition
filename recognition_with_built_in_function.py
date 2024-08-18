@@ -5,6 +5,7 @@ from time import sleep
 import cv2
 import numpy as np
 
+path_board=r'./testopstellingen/bord27.jpg'
 BOARD_SIZE = 15
 corners_to_be_found = BOARD_SIZE - 1 
 
@@ -89,7 +90,7 @@ def calculate_cell_centers(corners):
 
 def detect_pieces(cell_centers):
     # Laad de afbeelding opnieuw
-    img = cv2.imread(r'./testopstellingen/bord10.jpg')
+    img = cv2.imread(path_board)
     
     # Convert image to HSV (Hue, Saturation, Value)
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -196,29 +197,26 @@ def match_shapes_to_centers(shapes, cell_centers, img,color):
 def main():
     number_of_corners = (corners_to_be_found, corners_to_be_found)
     
-    img = cv2.imread(r'./testopstellingen/bord10.jpg')
-    print("geladen")
+    img = cv2.imread(path_board, cv2.IMREAD_GRAYSCALE)
+    
+    # ret, corners = cv2.findChessboardCorners(img, number_of_corners,
+    #                                         flags=cv2.CALIB_CB_ADAPTIVE_THRESH +
+    #                                             cv2.CALIB_CB_FAST_CHECK +
+    #                                             cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_EXHAUSTIVE)
 
-    # Convert to grayscale
-    try:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    except Exception as e:
-        raise Exception(f"Check the image path: {e}")
-
-
-    ret, corners = cv2.findChessboardCorners(gray, number_of_corners,cv2.CALIB_CB_ADAPTIVE_THRESH)
+    ret, corners = cv2.findChessboardCorners(img, number_of_corners,cv2.CALIB_CB_ADAPTIVE_THRESH,flags=cv2.CALIB_CB_EXHAUSTIVE)
     
     if ret == True:
         print("Chessboard detected")
         
-        corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), 
+        corners = cv2.cornerSubPix(img, corners, (11, 11), (-1, -1), 
                                    criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001))
         
         avg_distances = determine_average_distances(corners)
         
         all_corners = extrapolate_other_corners(corners, avg_distances)
         
-        img_with_corners = img.copy()
+        img_with_corners = cv2.imread(path_board).copy()
         img_with_corners = cv2.drawChessboardCorners(img_with_corners, (BOARD_SIZE + 1, BOARD_SIZE + 1), all_corners.reshape(-1, 1, 2), ret)
         cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
         cv2.imshow('Chessboard', img_with_corners)
