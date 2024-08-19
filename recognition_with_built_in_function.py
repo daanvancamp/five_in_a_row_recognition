@@ -1,11 +1,12 @@
 
 import datetime
+import glob
 import json
 from time import sleep
 import cv2
 import numpy as np
 
-path_board=r'./testopstellingen/bord27.jpg'
+path_board=r'./testopstellingen/21.jpg'
 BOARD_SIZE = 15
 corners_to_be_found = BOARD_SIZE - 1 
 
@@ -194,50 +195,76 @@ def match_shapes_to_centers(shapes, cell_centers, img,color):
 
     return list_shapes
 
+def crop_to_square(frame):
+    height, width = frame.shape[:2]
+    smallest_side = min(height, width)
+    start_x = (width - smallest_side) // 2 
+    start_y = (height - smallest_side) // 2
+    square_frame = frame[start_y:start_y + smallest_side, start_x:start_x + smallest_side]
+    return square_frame
+
 def main():
     number_of_corners = (corners_to_be_found, corners_to_be_found)
     
-    img = cv2.imread(path_board, cv2.IMREAD_GRAYSCALE)
+    for i in glob.glob('./testopstellingen/*.jpg'):
+        path_board = i
+
+        #img = cv2.imread(path_board, cv2.IMREAD_GRAYSCALE)
+
+        img=cv2.imread(path_board)
+
+        #img=crop_to_square(img)
+
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        gray=cv2.GaussianBlur(gray, (53, 53), 0)
     
-    # ret, corners = cv2.findChessboardCorners(img, number_of_corners,
-    #                                         flags=cv2.CALIB_CB_ADAPTIVE_THRESH +
-    #                                             cv2.CALIB_CB_FAST_CHECK +
-    #                                             cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_EXHAUSTIVE)
+       
+        ret, corners = cv2.findChessboardCorners(gray, number_of_corners,
+                                                flags=cv2.CALIB_CB_ADAPTIVE_THRESH +
+                                                    cv2.CALIB_CB_FAST_CHECK +
+                                                    cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_EXHAUSTIVE)
 
-    ret, corners = cv2.findChessboardCorners(img, number_of_corners,cv2.CALIB_CB_ADAPTIVE_THRESH,flags=cv2.CALIB_CB_EXHAUSTIVE)
+        #ret, corners = cv2.findChessboardCorners(gray, number_of_corners,cv2.CALIB_CB_ADAPTIVE_THRESH,flags=cv2.CALIB_CB_EXHAUSTIVE)
     
-    if ret == True:
-        print("Chessboard detected")
+        if ret == True:
+            print("Chessboard detected",i)
         
-        corners = cv2.cornerSubPix(img, corners, (11, 11), (-1, -1), 
-                                   criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001))
+            corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), 
+                                        criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001))
         
-        avg_distances = determine_average_distances(corners)
+            avg_distances = determine_average_distances(corners)
         
-        all_corners = extrapolate_other_corners(corners, avg_distances)
+            all_corners = extrapolate_other_corners(corners, avg_distances)
         
-        img_with_corners = cv2.imread(path_board).copy()
-        img_with_corners = cv2.drawChessboardCorners(img_with_corners, (BOARD_SIZE + 1, BOARD_SIZE + 1), all_corners.reshape(-1, 1, 2), ret)
-        cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
-        cv2.imshow('Chessboard', img_with_corners)
-        cv2.waitKey(0)
+            img_with_corners = cv2.imread(path_board).copy()
+            img_with_corners = cv2.drawChessboardCorners(img_with_corners, (BOARD_SIZE + 1, BOARD_SIZE + 1), all_corners.reshape(-1, 1, 2), ret)
+            cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
+            cv2.imshow('Chessboard', img_with_corners)
+            cv2.waitKey(200)
 
-        cell_centers = calculate_cell_centers(all_corners)
+            # cell_centers = calculate_cell_centers(all_corners)
 
-        img_with_centers = img.copy()
-        for index,center in enumerate(cell_centers):
-            if index == len(cell_centers) - 1:
-                draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers",wait_key=0)
-            else:
-                draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
+            # img_with_centers = img.copy()
+            # for index,center in enumerate(cell_centers):
+            #     if index == len(cell_centers) - 1:
+            #         draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers",wait_key=0)
+            #     else:
+            #         draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
             
-        detect_pieces(cell_centers)
+            # detect_pieces(cell_centers)
 
 
-    else:
-        print("No chessboard detected")
-    
-    cv2.destroyAllWindows()
+        else:
+            print("No chessboard detected",i)
+            # for a,b in zip(range(14,3,-1),range(3,14,1)):
+            #     ret, corners = cv2.findChessboardCorners(gray, (a,b),cv2.CALIB_CB_ADAPTIVE_THRESH,flags=cv2.CALIB_CB_EXHAUSTIVE)
+            #     if ret:
+            #         print("Chessboard now detected",i)
+            #         break
+            #     else:
+            #         print("No chessboard now detected",i)
+
+        cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
