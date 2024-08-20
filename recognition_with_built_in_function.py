@@ -220,7 +220,7 @@ def main():
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        gray = cv2.medianBlur(gray, 5)
+        gray = cv2.medianBlur(gray, 13)
 
         #gray=cv2.GaussianBlur(gray, (53, 53), 0)
     
@@ -256,7 +256,7 @@ def main():
             #     else:
             #         draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
             
-            # detect_pieces(cell_centers)
+            #detect_pieces(cell_centers)
 
 
         else:
