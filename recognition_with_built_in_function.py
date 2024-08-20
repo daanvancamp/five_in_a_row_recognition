@@ -89,7 +89,7 @@ def calculate_cell_centers(corners):
 
 
 
-def detect_pieces(cell_centers):
+def detect_pieces(cell_centers, path_board):
     # Laad de afbeelding opnieuw
     img = cv2.imread(path_board)
     
@@ -207,10 +207,11 @@ def main():
     number_of_corners = (corners_to_be_found, corners_to_be_found)
     aantal=0
     number_succeeded=0
-    for i in glob.glob('./test_images/**/*.jpg',recursive=True):
+    for i in glob.glob('./test_images/images_with_pieces/*.jpg',recursive=True):
         path_board = i
+        if "_processed" in path_board or "."+path_board.rsplit(".",2)[1]+"_processed.jpg" in glob.glob('./test_images/images_with_pieces/*.jpg',recursive=True):
+                continue
         aantal+=1
-
 
         #img = cv2.imread(path_board, cv2.IMREAD_GRAYSCALE)
 
@@ -247,6 +248,8 @@ def main():
             cv2.imshow('Chessboard', img_with_corners)
             cv2.waitKey(1)
 
+            cv2.imwrite(path_board[:-4] + "_processed.jpg"  , img_with_corners)
+
             # cell_centers = calculate_cell_centers(all_corners)
 
             # img_with_centers = img.copy()
@@ -256,18 +259,11 @@ def main():
             #     else:
             #         draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
             
-            #detect_pieces(cell_centers)
+            # detect_pieces(cell_centers,path_board)
 
 
         else:
             print("No chessboard detected",i)
-            # for a,b in zip(range(14,3,-1),range(3,14,1)):
-            #     ret, corners = cv2.findChessboardCorners(gray, (a,b),cv2.CALIB_CB_ADAPTIVE_THRESH,flags=cv2.CALIB_CB_EXHAUSTIVE)
-            #     if ret:
-            #         print("Chessboard now detected",i)
-            #         break
-            #     else:
-            #         print("No chessboard now detected",i)
 
         cv2.destroyAllWindows()
         print("score:",number_succeeded,"off the",aantal,"boards were recognized")
