@@ -206,7 +206,7 @@ def crop_to_square(frame):
 def main():
     number_of_corners = (corners_to_be_found, corners_to_be_found)
     aantal=0
-    for i in glob.glob('./testopstellingen/*.jpg'):
+    for i in glob.glob('./test_images/**/*.jpg',recursive=True):
         path_board = i
 
         #img = cv2.imread(path_board, cv2.IMREAD_GRAYSCALE)
