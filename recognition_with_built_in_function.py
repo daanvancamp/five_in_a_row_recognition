@@ -10,7 +10,7 @@ path_board=r'./testopstellingen/21.jpg'
 BOARD_SIZE = 15
 corners_to_be_found = BOARD_SIZE - 1 
 
-def draw_point_and_show(image, point, window_name="Corners",wait_key=1):
+def draw_point_and_show(image, point, window_name="Corners",wait_key=1000):
     color = (0, 0, 255)
     radius = 10
     thickness = -1
@@ -205,7 +205,7 @@ def crop_to_square(frame):
 
 def main():
     number_of_corners = (corners_to_be_found, corners_to_be_found)
-    
+    aantal=0
     for i in glob.glob('./testopstellingen/*.jpg'):
         path_board = i
 
@@ -216,17 +216,19 @@ def main():
         #img=crop_to_square(img)
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        gray=cv2.GaussianBlur(gray, (53, 53), 0)
+
+        gray = cv2.medianBlur(gray, 5)
+
+        #gray=cv2.GaussianBlur(gray, (53, 53), 0)
     
        
-        ret, corners = cv2.findChessboardCorners(gray, number_of_corners,
-                                                flags=cv2.CALIB_CB_ADAPTIVE_THRESH +
-                                                    cv2.CALIB_CB_FAST_CHECK +
-                                                    cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_EXHAUSTIVE)
+        ret, corners = cv2.findChessboardCornersSB(gray, number_of_corners,
+                                                flags= cv2.CALIB_CB_EXHAUSTIVE )
 
         #ret, corners = cv2.findChessboardCorners(gray, number_of_corners,cv2.CALIB_CB_ADAPTIVE_THRESH,flags=cv2.CALIB_CB_EXHAUSTIVE)
     
         if ret == True:
+            aantal+=1
             print("Chessboard detected",i)
         
             corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), 
@@ -265,6 +267,6 @@ def main():
             #         print("No chessboard now detected",i)
 
         cv2.destroyAllWindows()
-
+        print("aantal",aantal)
 if __name__ == "__main__":
     main()
