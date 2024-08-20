@@ -242,7 +242,7 @@ def main():
             img_with_corners = cv2.drawChessboardCorners(img_with_corners, (BOARD_SIZE + 1, BOARD_SIZE + 1), all_corners.reshape(-1, 1, 2), ret)
             cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
             cv2.imshow('Chessboard', img_with_corners)
-            cv2.waitKey(5000)
+            cv2.waitKey(1)
 
             # cell_centers = calculate_cell_centers(all_corners)
 
