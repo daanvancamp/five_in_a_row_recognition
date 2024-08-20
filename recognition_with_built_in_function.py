@@ -10,7 +10,7 @@ path_board=r'./testopstellingen/21.jpg'
 BOARD_SIZE = 15
 corners_to_be_found = BOARD_SIZE - 1 
 
-def draw_point_and_show(image, point, window_name="Corners",wait_key=1000):
+def draw_point_and_show(image, point, window_name="Corners",wait_key=1):
     color = (0, 0, 255)
     radius = 10
     thickness = -1
