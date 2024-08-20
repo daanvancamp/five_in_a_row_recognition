@@ -137,7 +137,7 @@ def detect_pieces(cell_centers, path_board):
     if not "_processed2" in path_board and not "."+path_board.rsplit(".",2)[1]+"_processed2.jpg" in glob.glob('./test_images/images_with_pieces/*.jpg',recursive=True):
         cv2.imwrite(path_board[:-4] + "_processed2.jpg"  , img)
 
-    cv2.waitKey(0)
+    cv2.waitKey(1)
     cv2.destroyAllWindows()
 
 def detect_and_draw_ellipses(img, mask, color, shape="ellipses", min_area=15):
@@ -212,7 +212,7 @@ def main():
     number_succeeded=0
     for i in glob.glob('./test_images/images_with_pieces/*.jpg',recursive=True):
         path_board = i
-        if "_processed" in path_board or "."+path_board.rsplit(".",2)[1]+"_processed.jpg" in glob.glob('./test_images/images_with_pieces/*.jpg',recursive=True):
+        if "_processed" in path_board:#or "."+path_board.rsplit(".",2)[1]+"_processed.jpg" in glob.glob('./test_images/images_with_pieces/*.jpg',recursive=True)
                 continue
         aantal+=1
 
@@ -258,7 +258,7 @@ def main():
             img_with_centers = img.copy()
             for index,center in enumerate(cell_centers):
                 if index == len(cell_centers) - 1:
-                    draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers",wait_key=0)
+                    draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers",wait_key=1)
                 else:
                     draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
             
