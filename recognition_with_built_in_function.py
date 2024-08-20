@@ -208,6 +208,7 @@ def main():
     aantal=0
     for i in glob.glob('./testopstellingen/*.jpg'):
         path_board = i
+
         #img = cv2.imread(path_board, cv2.IMREAD_GRAYSCALE)
 
         img=cv2.imread(path_board)
@@ -241,7 +242,7 @@ def main():
             img_with_corners = cv2.drawChessboardCorners(img_with_corners, (BOARD_SIZE + 1, BOARD_SIZE + 1), all_corners.reshape(-1, 1, 2), ret)
             cv2.namedWindow("Chessboard", cv2.WINDOW_NORMAL)
             cv2.imshow('Chessboard', img_with_corners)
-            cv2.waitKey(100)
+            cv2.waitKey(5000)
 
             # cell_centers = calculate_cell_centers(all_corners)
 
