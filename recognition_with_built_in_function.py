@@ -50,6 +50,7 @@ def determine_average_distances(corners):
     return avg_horizontal_distance, avg_vertical_distance
 
 def extrapolate_other_corners(corners, avg_distances):
+    global avg_horizontal, avg_vertical
     avg_horizontal, avg_vertical = avg_distances
 
     complete_corners = np.zeros((BOARD_SIZE + 1, BOARD_SIZE + 1, 2), dtype=np.float32)
@@ -137,17 +138,19 @@ def detect_pieces(cell_centers, path_board):
     if not "_processed2" in path_board and not "."+path_board.rsplit(".",2)[1]+"_processed2.jpg" in glob.glob('./test_images/images_with_pieces/*.jpg',recursive=True):
         cv2.imwrite(path_board[:-4] + "_processed2.jpg"  , img)
 
-    cv2.waitKey(1)
+    cv2.waitKey(4000)
     cv2.destroyAllWindows()
 
-def detect_and_draw_ellipses(img, mask, color, shape="ellipses", min_area=15):
+def detect_and_draw_ellipses(img, mask, color, shape="ellipses", min_area=50):
+    global avg_horizontal, avg_vertical
     # Zoek contouren in het masker
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
+    min_area = (avg_horizontal * avg_vertical)/3
+    max_area = (avg_horizontal * avg_vertical)+10
     detected_ellipses = []
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        if area >= min_area and len(cnt) >= 5:  # Filter ellipsen op basis van minimale oppervlakte
+        if max_area>=area >= min_area and len(cnt) >= 5:  # Filter ellipsen op basis van minimale oppervlakte
             ellipse = cv2.fitEllipse(cnt)
             cv2.ellipse(img, ellipse, color, 2)
             center = (int(ellipse[0][0]), int(ellipse[0][1]))  # Middelpunt van de ellips
