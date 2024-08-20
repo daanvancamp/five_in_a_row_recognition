@@ -206,8 +206,11 @@ def crop_to_square(frame):
 def main():
     number_of_corners = (corners_to_be_found, corners_to_be_found)
     aantal=0
+    number_succeeded=0
     for i in glob.glob('./test_images/**/*.jpg',recursive=True):
         path_board = i
+        aantal+=1
+
 
         #img = cv2.imread(path_board, cv2.IMREAD_GRAYSCALE)
 
@@ -228,7 +231,7 @@ def main():
         #ret, corners = cv2.findChessboardCorners(gray, number_of_corners,cv2.CALIB_CB_ADAPTIVE_THRESH,flags=cv2.CALIB_CB_EXHAUSTIVE)
     
         if ret == True:
-            aantal+=1
+            number_succeeded+=1
             print("Chessboard detected",i)
         
             corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), 
@@ -267,6 +270,6 @@ def main():
             #         print("No chessboard now detected",i)
 
         cv2.destroyAllWindows()
-        print("aantal",aantal)
+        print("score:",number_succeeded,"off the",aantal,"boards were recognized")
 if __name__ == "__main__":
     main()
