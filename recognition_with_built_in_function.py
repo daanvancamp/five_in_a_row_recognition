@@ -134,6 +134,9 @@ def detect_pieces(cell_centers, path_board):
 
     cv2.namedWindow("Detected Pieces", cv2.WINDOW_NORMAL)
     cv2.imshow("Detected Pieces", img)
+    if not "_processed2" in path_board and not "."+path_board.rsplit(".",2)[1]+"_processed2.jpg" in glob.glob('./test_images/images_with_pieces/*.jpg',recursive=True):
+        cv2.imwrite(path_board[:-4] + "_processed2.jpg"  , img)
+
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -250,16 +253,16 @@ def main():
 
             cv2.imwrite(path_board[:-4] + "_processed.jpg"  , img_with_corners)
 
-            # cell_centers = calculate_cell_centers(all_corners)
+            cell_centers = calculate_cell_centers(all_corners)
 
-            # img_with_centers = img.copy()
-            # for index,center in enumerate(cell_centers):
-            #     if index == len(cell_centers) - 1:
-            #         draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers",wait_key=0)
-            #     else:
-            #         draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
+            img_with_centers = img.copy()
+            for index,center in enumerate(cell_centers):
+                if index == len(cell_centers) - 1:
+                    draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers",wait_key=0)
+                else:
+                    draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
             
-            # detect_pieces(cell_centers,path_board)
+            detect_pieces(cell_centers,path_board)
 
 
         else:
