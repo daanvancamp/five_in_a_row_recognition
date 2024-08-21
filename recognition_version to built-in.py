@@ -79,30 +79,24 @@ def calculate_cell_centers(corners):
 
 
 def detect_pieces(cell_centers, img):    
-    # Convert image to HSV (Hue, Saturation, Value)
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-    # Definieer de onderste en bovenste grens voor de kleur blauw in HSV
     lower_blue = np.array([100, 150, 50])
     upper_blue = np.array([140, 255, 255])
     
-    # Definieer de onderste en bovenste grens voor de kleur rood in HSV
     lower_red1 = np.array([0, 120, 70])
     upper_red1 = np.array([10, 255, 255])
     lower_red2 = np.array([170, 120, 70])
     upper_red2 = np.array([180, 255, 255])
 
-    # Maak maskers voor blauwe en rode kleuren
     mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
     mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
     mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
     mask_red = mask_red1 + mask_red2
     
-    # Detecteer ellipsen in de blauwe en rode gebieden
     blue_ellipses = detect_and_draw_ellipses(img, mask_blue, color=(255, 0, 0), shape="blue ellipses")
     red_ellipses = detect_and_draw_ellipses(img, mask_red, color=(0, 0, 255), shape="red ellipses")
 
-    # Bereken en toon het dichtstbijzijnde celcentrum voor elk gedetecteerd object
     list_blue_shapes=match_shapes_to_centers(blue_ellipses, cell_centers, img,"blue")
     list_red_shapes=match_shapes_to_centers(red_ellipses, cell_centers, img,"red")
 
@@ -135,14 +129,14 @@ def detect_and_draw_ellipses(img, mask, color, shape="ellipses", min_area=50):
     detected_ellipses = []
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        if max_area>=area >= min_area and len(cnt) >= 5:  # Filter ellipsen op basis van minimale oppervlakte
+        if max_area>=area >= min_area and len(cnt) >= 5:
             ellipse = cv2.fitEllipse(cnt)
             cv2.ellipse(img, ellipse, color, 2)
-            center = (int(ellipse[0][0]), int(ellipse[0][1]))  # Middelpunt van de ellips
-            detected_ellipses.append(center)  # Voeg het middelpunt toe aan de lijst
+            center = (int(ellipse[0][0]), int(ellipse[0][1]))  
+            detected_ellipses.append(center)  
     print(f"Detected {len(detected_ellipses)} {shape}.")
     
-    return detected_ellipses  # Retourneer de lijst met gedetecteerde ellipsen
+    return detected_ellipses  
 
 def get_coordinates(index):
     x = index[0]//BOARD_SIZE
@@ -160,7 +154,6 @@ def match_shapes_to_centers(shapes, cell_centers, img,color):
         min_distance = float("inf")
         
         for center in cell_centers:
-            # Bereken de Euclidische afstand
             distance = np.linalg.norm(np.array(shape) - np.array(center))
             if distance < min_distance:
                 min_distance = distance
@@ -179,14 +172,13 @@ def match_shapes_to_centers(shapes, cell_centers, img,color):
             list_shapes.append((color,coordinates))
 
 
-            shape_point = tuple(map(int, shape))  # Converteer shape naar een tuple van integers
-            closest_center_point = tuple(map(int, closest_center))  # Converteer closest_center naar een tuple van integers
+            shape_point = tuple(map(int, shape))  
+            closest_center_point = tuple(map(int, closest_center)) 
             
 
-            # Teken een lijn van het object naar het dichtstbijzijnde celcentrum
             cv2.line(img, shape_point, closest_center_point, (0, 255, 0), 2)
-            cv2.circle(img, shape_point, 5, (0, 255, 255), -1)  # Teken een geel punt op het gedetecteerde object
-            cv2.circle(img, closest_center_point, 5, (255, 255, 0), -1)  # Teken een blauw punt op het celcentrum
+            cv2.circle(img, shape_point, 5, (0, 255, 255), -1)  
+            cv2.circle(img, closest_center_point, 5, (255, 255, 0), -1)  
 
     return list_shapes
 
