@@ -89,7 +89,6 @@ def calculate_cell_centers(corners):
     return np.array(centers)
 
 
-
 def detect_pieces(cell_centers, path_board):
     # Laad de afbeelding opnieuw
     img = cv2.imread(path_board)
@@ -123,7 +122,7 @@ def detect_pieces(cell_centers, path_board):
 
     all_shapes = blue_ellipses + red_ellipses
 
-    list_shapes = list_blue_shapes + list_red_shapes
+    list_shapes = list(set(list_blue_shapes + list_red_shapes))
 
     data = {
             "timestamp": datetime.datetime.now().isoformat(),
@@ -145,7 +144,7 @@ def detect_and_draw_ellipses(img, mask, color, shape="ellipses", min_area=50):
     global avg_horizontal, avg_vertical
     # Zoek contouren in het masker
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    min_area = (avg_horizontal * avg_vertical)/3
+    min_area = (avg_horizontal * avg_vertical)/60
     max_area = (avg_horizontal * avg_vertical)+10
     detected_ellipses = []
     for cnt in contours:
@@ -181,6 +180,10 @@ def match_shapes_to_centers(shapes, cell_centers, img,color):
                 min_distance = distance
                 closest_center = center
         
+        max_distance=(avg_horizontal+avg_vertical)/2
+
+        if min_distance>max_distance:
+            continue
 
         if closest_center.any():
             result=np.where(cell_centers == closest_center)
@@ -219,23 +222,16 @@ def main():
                 continue
         aantal+=1
 
-        #img = cv2.imread(path_board, cv2.IMREAD_GRAYSCALE)
-
         img=cv2.imread(path_board)
-
-        #img=crop_to_square(img)
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         gray = cv2.medianBlur(gray, 13)
 
         #gray=cv2.GaussianBlur(gray, (53, 53), 0)
-    
        
         ret, corners = cv2.findChessboardCornersSB(gray, number_of_corners,
                                                 flags= cv2.CALIB_CB_EXHAUSTIVE )
-
-        #ret, corners = cv2.findChessboardCorners(gray, number_of_corners,cv2.CALIB_CB_ADAPTIVE_THRESH,flags=cv2.CALIB_CB_EXHAUSTIVE)
     
         if ret == True:
             number_succeeded+=1
@@ -258,12 +254,12 @@ def main():
 
             cell_centers = calculate_cell_centers(all_corners)
 
-            img_with_centers = img.copy()
-            for index,center in enumerate(cell_centers):
-                if index == len(cell_centers) - 1:
-                    draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers",wait_key=1)
-                else:
-                    draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
+            # img_with_centers = img.copy()
+            # for index,center in enumerate(cell_centers):
+            #     if index == len(cell_centers) - 1:
+            #         draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers",wait_key=1)
+            #     else:
+            #         draw_point_and_show(img_with_centers, tuple(center), window_name="Cell Centers")
             
             detect_pieces(cell_centers,path_board)
 
