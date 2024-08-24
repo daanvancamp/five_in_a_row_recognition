@@ -201,13 +201,14 @@ def main():
     ret, corners = cv2.findChessboardCornersSB(gray, number_of_corners,
                                             flags= cv2.CALIB_CB_EXHAUSTIVE +cv2.CALIB_CB_ACCURACY )
     
-    if ret== False:
+    if not ret:
         print("no chessboard detected at first")
         ret, corners= cv2.findChessboardCorners(gray, number_of_corners, flags= cv2.CALIB_CB_PLAIN +cv2.CALIB_CB_FAST_CHECK )
 
-    if ret == True:
+    if ret:
         print("Chessboard detected")
-        
+        img=corners = corners.squeeze()
+
         corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), 
                                     criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001))
         
